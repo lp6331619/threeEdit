@@ -1,25 +1,57 @@
 <template>
   <n-space class="header-left-btn" :wrap="false" :size="25">
-    <n-button size="small" quaternary @click="goHomeHandle()">
+    <!-- <n-button size="small" quaternary @click="goHomeHandle()">
       <template #icon>
         <n-icon :depth="3">
           <home-icon></home-icon>
         </n-icon>
       </template>
-    </n-button>
+    </n-button> -->
     <n-space :wrap="false">
       <!-- 模块展示按钮 -->
-      <!-- <n-tooltip v-for="item in btnList" :key="item.key" placement="bottom" trigger="hover">
+      <n-tooltip v-for="item in btnList" :key="item.key" placement="bottom" trigger="hover">
         <template #trigger>
           <n-button size="small" ghost :type="styleHandle(item)" :focusable="false" @click="clickHandle(item)">
             <component :is="item.icon"></component>
           </n-button>
         </template>
         <span>{{ item.title }}</span>
-      </n-tooltip> -->
+      </n-tooltip>
 
       <n-divider vertical />
+      <!-- <n-button size="small" quaternary @click="">
+        <template #icon>
+          <n-icon :depth="3">
+            <DownloadIcon ></DownloadIcon>
+          </n-icon> 
+        </template>
+        导入
+      </n-button> -->
+      <n-upload
+        v-model:file-list="importUploadFileListRef"
+        :show-file-list="false"
+        :customRequest="importCustomRequest"
+        @before-upload="importBeforeUpload"
+      >
+        <n-button size="small" quaternary>
+          <template #icon>
+            <n-icon :depth="3">
+              <DownloadIcon ></DownloadIcon>
+            </n-icon> 
+          </template>
+          导入
+        </n-button>
+      </n-upload>
 
+      <n-button size="small" quaternary>
+        <template #icon>
+          <n-icon :depth="3">
+            <ShareIcon ></ShareIcon>
+          </n-icon> 
+        </template>
+        导出
+      </n-button>
+      <n-divider vertical />
       <!-- 历史记录按钮 -->
       <n-tooltip v-for="item in historyList" :key="item.key" placement="bottom" trigger="hover">
         <template #trigger>
@@ -34,20 +66,19 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, Ref, reactive, computed } from 'vue'
-import { renderIcon, goDialog, goHome } from '@/utils'
+import { toRefs,Ref, ref,nextTick, reactive, computed } from 'vue'
+import { renderIcon, goDialog,readFile, goHome,JSONParse } from '@/utils'
 import { icon } from '@/plugins'
 import { useRemoveKeyboard } from '../../hooks/useKeyboard.hook'
-
+import { UploadCustomRequestOptions } from 'naive-ui'
+import { FileTypeEnum } from '@/enums/fileTypeEnum'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
-
 import { useChartHistoryStore } from '@/store/modules/chartHistoryStore/chartHistoryStore'
 import { HistoryStackEnum } from '@/store/modules/chartHistoryStore/chartHistoryStore.d'
-
+import { useSync } from '@/views/chart/hooks/useSync.hook'
 import { useChartLayoutStore } from '@/store/modules/chartLayoutStore/chartLayoutStore'
 import { ChartLayoutStoreEnum } from '@/store/modules/chartLayoutStore/chartLayoutStore.d'
-
-const { LayersIcon, BarChartIcon, PrismIcon, HomeIcon, ArrowBackIcon, ArrowForwardIcon } = icon.ionicons5
+const { LayersIcon, BarChartIcon, PrismIcon, HomeIcon, ArrowBackIcon, ArrowForwardIcon,DownloadIcon ,ShareIcon} = icon.ionicons5
 const { setItem } = useChartLayoutStore()
 const { getLayers, getCharts, getDetails } = toRefs(useChartLayoutStore())
 const chartEditStore = useChartEditStore()
@@ -100,6 +131,53 @@ const historyList = reactive<ItemType<HistoryStackEnum>[]>([
     icon: renderIcon(ArrowForwardIcon)
   }
 ])
+
+const importUploadFileListRef = ref()
+  const { updateComponent } = useSync()
+
+  // 上传-前置
+  //@ts-ignore
+  const importBeforeUpload = ({ file }) => {
+    importUploadFileListRef.value = []
+    const [f,type] =file.name.split('.')
+    if (!['gltf','glb'].includes(type)) {
+      window['$message'].warning('仅支持上传 【GLTF,GLB】 格式文件，请重新上传！')
+      return false
+    }
+    return true
+  }
+  // 上传-导入
+  const importCustomRequest = (options: UploadCustomRequestOptions) => {
+    const { file } = options
+    nextTick(() => {
+      if (file.file) {
+        readFile(file.file).then((fileData: any) => {
+          console.log(fileData)
+          const [f,type] =file.name.split('.')
+          chartEditStore.addComponentList({
+            id:f,
+            name:f,
+            type:'primitive',
+            key:f,
+            meshConfig:fileData,
+            chartConfig:{
+              "key": f,
+              "chartKey": "V"+f,
+              "conKey": "VC"+f,
+              "title": f,
+              "category": "Model",
+              "categoryName": "模型",
+              "package": "Graphic",
+              "chartFrame": "common",
+              image:'123'
+            }
+          }, false, true)
+        })
+      } else {
+        window['$message'].error('导入失败，请检查数据或联系管理员！')
+      }
+    })
+  }
 
 
 // store 描述的是展示的值，所以和 ContentConfigurations 的 collapsed 是相反的

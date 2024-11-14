@@ -4,6 +4,7 @@
     :class="{ scoped: !chartLayoutStore.getLayers }"
     title="图层"
     :depth="2"
+    :backIcon="false"
     @back="backHandle"
     @mousedown="boxMousedownHandle($event)"
   >

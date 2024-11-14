@@ -146,55 +146,45 @@ export const useChartEditStore = defineStore({
     //摄像头数据
     cameraConfig: {
       // position: [20, 20, 20],
-      fov: 50, //摄像机视锥体垂直视野角度
-      aspect: 1, // 摄像机视锥体长宽比
-      near: 0.1, // 摄像机视锥体近端面
-      far: 2000, // 摄像机视锥体远端面
+      // fov: 50, //摄像机视锥体垂直视野角度
+      // aspect: 1, // 摄像机视锥体长宽比
+      // near: 0.1, // 摄像机视锥体近端面
+      // far: 2000, // 摄像机视锥体远端面
       // zoom: 1,
       // lookAt: [100, 10, 20],
-      distance: 25,
+      // distance: 25,
+
       minDistance: 1, //摄像机最小距离
       maxDistance: 100, //摄像机最大距离
-      // minZoom: 0.01, //最小缩放
-      // maxZoom: 1 // 最大缩放
       enableDamping: true, //是否启用阻尼
       dampingFactor: 0.05, //阻尼系数
       autoRotate: false, //是否自动旋转
       autoRotateSpeed: 2, //选择速度
+      enableZoom: true, //启用缩放
+      zoomSpeed: 5 //缩放速度
+
+      // minZoom: 0.01, //最小缩放
+      // maxZoom: 1 // 最大缩放
       // enablePan: true, //启用平移
       // keyPanSpeed: 100
-      enableZoom: true, //启用缩放
-      zoomSpeed: 5, //缩放速度
+      // maxPolarAngle: Math.PI,
+      // minPolarAngle: 0,
+      // maxAzimuthAngle: Math.PI,
+      // minAzimuthAngle: -Math.PI,
+      // enablePan: true,
+      // keyPanSpeed: 7
 
-      maxPolarAngle: Math.PI,
-      minPolarAngle: 0,
-      maxAzimuthAngle: Math.PI,
-      minAzimuthAngle: -Math.PI,
-      enablePan: true,
-      keyPanSpeed: 7,
-
-      minZoom: 0,
-      maxZoom: 100,
-      enableRotate: true,
-      rotateSpeed: 1
+      // minZoom: 0,
+      // maxZoom: 100,
+      // enableRotate: true,
+      // rotateSpeed: 1
     },
     //灯光配置
     lightSetting: [
       {
-        type: 'TresAmbientLight',
-        helper: false,
-        config: {
-          intensity: 1,
-          color: '#fff'
-        }
-      },
-      {
         type: 'TresDirectionalLight',
-        helper: 'TresDirectionalLightHelper',
-        isShow: false,
         config: {
           position: [5, 5, 5],
-          targets: [0, 0, 0],
           color: '#ffffff',
           intensity: 1,
           castShadow: false

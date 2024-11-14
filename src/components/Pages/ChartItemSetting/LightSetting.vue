@@ -4,10 +4,10 @@
         <n-collapse-item v-for="(item,i) in config" :title="`灯光${i+1}`"  :name="i" >
           <setting-item-box name="灯光类型" >
             <setting-item >
-              <Select v-model:value="item.type" :disabled="item.type=='TresAmbientLight'" :index="i" :list="lightTypeOptions"  @change="onChange"></Select>
+              <Select v-model:value="item.type" :index="i" :list="lightTypeOptions"  @change="onChange"></Select>
             </setting-item>
             <setting-item >
-              <n-button strong secondary :disabled="item.type=='TresAmbientLight'" type="error" size="small" @click="delItem(i)">
+              <n-button strong secondary  type="error" size="small" @click="delItem(i)">
                 删除灯光
               </n-button>
             </setting-item>
@@ -34,9 +34,9 @@
               <n-input-number v-model:value="item.config.targets[2]" :step="1" size="small"></n-input-number>
             </setting-item>
           </setting-item-box> -->
-          <setting-item-box name="是否开启辅助" >
+          <!-- <setting-item-box name="是否开启辅助" >
             <setting-item ><n-switch v-model:value="item.config.isShow" size="small"></n-switch></setting-item>
-          </setting-item-box>
+          </setting-item-box> -->
           <setting-item-box name="灯光" >
             <setting-item name="颜色">
               <n-color-picker
@@ -87,60 +87,44 @@ const props = defineProps({
   }
 })
 const onChange = ({index,value})=>{
-  const i = lightTypeOptions.findIndex((e:any)=>e.value==value)
-  props.config[index].type = value
-  props.config[index].helper = lightTypeOptions[i].helper
+  // const i = lightTypeOptions.findIndex((e:any)=>e.value==value)
+  // props.config[index].type = value
 }
 const designStore = useDesignStore()
 const addConfig = () => {
   props.config?.push({
     type: 'TresDirectionalLight',
-    helper:'TresDirectionalLightHelper',
     config:{
-      color: '#ffffff',
-      intensity: 1,
-      position: {
-        x: 0,
-        y: 5,
-        z: 0
-      }
+          color: '#ffffff',
+          intensity: 1,
+          castShadow: false,
+      position: [5, 5, 5],
     }
   })
 }
 // 删除
 const delItem = (i:number)=>{
-  props.config.length!=1 && props.config.splice(i,1)
+   props.config.splice(i,1)
 }
 // 灯光类型
 const lightTypeOptions = [
   {
-    label: '环境光',
-    value: 'TresAmbientLight',
-    disabled:true
-  },
-  {
     label: '平行光',
     value: 'TresDirectionalLight',
-    helper:'TresDirectionalLightHelper'
   },
   {
     label: '点光源',
     value: 'TresPointLight',
-    helper:'TresPointLightHelper'
-  },
-  {
-    label: '半球光',
-    value: 'TresHemisphereLight',
-    helper:'TresHemisphereLightHelper'
   },
   {
     label: '聚光灯',
     value: 'TresSpotLight',
-    helper:'TresSpotLightHelper'
-  }
+  },
+  {
+    label: '半球光',
+    value: 'TresHemisphereLight',
+  },
 ]
-
-
 </script>
 
 <style lang="scss" scoped>

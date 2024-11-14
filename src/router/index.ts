@@ -5,7 +5,7 @@ import { createRouterGuards } from './router-guards'
 import { PageEnum } from '@/enums/pageEnum'
 import { HttpErrorPage, LoginRoute, ReloadRoute } from '@/router/base'
 import { Layout } from '@/router/constant'
-
+const testpage = () => import('@/views/test/index.vue')
 import modules from '@/router/modules'
 
 const RootRoute: Array<RouteRecordRaw> = [
@@ -15,29 +15,27 @@ const RootRoute: Array<RouteRecordRaw> = [
     redirect: PageEnum.BASE_HOME,
     component: Layout,
     meta: {
-      title: 'Root',
+      title: 'Root'
     },
-    children: [
-      ...HttpErrorPage,
-      modules.projectRoutes,
-      modules.chartRoutes,
-      modules.previewRoutes,
-      modules.editRoutes
-    ]
+    children: [...HttpErrorPage, modules.projectRoutes, modules.chartRoutes, modules.previewRoutes, modules.editRoutes]
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: testpage
   }
 ]
 
-
-export const constantRouter: any[] = [LoginRoute, ...RootRoute, RedirectRoute, ReloadRoute];
+export const constantRouter: any[] = [LoginRoute, ...RootRoute, RedirectRoute, ReloadRoute]
 
 const router = createRouter({
   history: createWebHashHistory(''),
   routes: constantRouter,
-  strict: true,
+  strict: true
 })
 
 export function setupRouter(app: App) {
-  app.use(router);
+  app.use(router)
   // 创建路由守卫
   createRouterGuards(router)
 }

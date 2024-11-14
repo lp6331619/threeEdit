@@ -26,7 +26,7 @@ export const children = [
     }
   },
   {
-    config: { color: 'rgb(43,92,129)' },
+    config: { color: '#214A68' },
     type: 'TresMeshToonMaterial'
   }
 ]

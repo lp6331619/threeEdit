@@ -96,23 +96,6 @@ const { handleContextMenu } = useContextMenu()
 // 编辑时注入scale变量，消除警告
 provide(SCALE_KEY, null)
 
-// 点击事件
-// const mousedownHandle = (e: MouseEvent, item: CreateComponentType) => {
-//   onClickOutSide()
-//   // 若此时按下了 CTRL, 表示多选
-//   const id = item.id
-//   if (e.buttons === MouseEventButton.LEFT && window.$KeyboardActive?.ctrl) {
-//     // 若已选中，则去除
-//     if (chartEditStore.targetChart.selectId.includes(id)) {
-//       const exList = chartEditStore.targetChart.selectId.filter(e => e !== id)
-//       chartEditStore.setTargetSelectChart(exList)
-//     } else {
-//       chartEditStore.setTargetSelectChart(id, true)
-//     }
-//     return
-//   }
-//   chartEditStore.setTargetSelectChart(id)
-// }
 // 布局处理
 useLayout(async () => {})
 const state = reactive({
